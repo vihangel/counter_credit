@@ -3,6 +3,7 @@ import 'package:counter_credit/routes/setup_routes.dart';
 import 'package:counter_credit/screens/admin/notify_product_listener.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,6 +16,8 @@ void main() {
   Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  usePathUrlStrategy();
 
   runApp(
     ChangeNotifierProvider(
