@@ -82,17 +82,17 @@ class _SimulatePageState extends State<SimulatePage> {
                       ),
                       Text(
                         textAlign: TextAlign.left,
-                        'Prazo: ${widget.payment} meses',
+                        'Prazo: ${widget.payment} ${widget.payment == '1' ? 'mês' : 'meses'}',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
                         textAlign: TextAlign.left,
-                        'Amortização: ${widget.gracePeriod} meses',
+                        'Amortização: ${widget.gracePeriod} ${widget.gracePeriod == '1' ? 'mês' : 'meses'}',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
                   const Flex(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     direction: Axis.horizontal,
@@ -107,7 +107,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         fit: FlexFit.tight,
                         child: Text(
                           'Correção',
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                         ),
                       ),
                       Flexible(
@@ -115,7 +115,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         fit: FlexFit.tight,
                         child: Text(
                           'Juros',
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                         ),
                       ),
                       Flexible(
@@ -123,7 +123,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         fit: FlexFit.tight,
                         child: Text(
                           'Amortização',
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                         ),
                       ),
                       Flexible(
@@ -131,7 +131,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         fit: FlexFit.tight,
                         child: Text(
                           'Valor',
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                         ),
                       ),
                       Flexible(
@@ -139,7 +139,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         fit: FlexFit.tight,
                         child: Text(
                           'Saldo Devedor',
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                         ),
                       ),
                       Flexible(
@@ -147,7 +147,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         fit: FlexFit.tight,
                         child: Text(
                           'Bônus Pag. Dia',
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                         ),
                       ),
                     ],
@@ -208,6 +208,7 @@ class _SimulatePageState extends State<SimulatePage> {
                       );
                     }),
                   ),
+                  const SizedBox(height: 8),
                   const Text(
                       '(*) Os valores das prestações são aproximados. As opções apresentadas não valem como proposta e representam apenas uma simulação com o intuito de subsidiar a tomada de decisão. Até a contratação da operação, a taxa de juros, prazo e demais condições podem ser alteradas sem prévio aviso. As operações de crédito estão sujeitas à análise e aprovação da Desenvolve MT.'),
                   const SizedBox(height: 16),
