@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "conecta-calculadora",
+          "appId": "1:541696251868:android:164e4a42f124dcb38ea119",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "conecta-calculadora",
+          "configurations": {
+            "android": "1:541696251868:android:164e4a42f124dcb38ea119",
+            "ios": "1:541696251868:ios:5a0080036c086a9d8ea119",
+            "macos": "1:541696251868:ios:5a0080036c086a9d8ea119",
+            "web": "1:541696251868:web:8b27b7e274e171488ea119",
+            "windows": "1:541696251868:web:b5d76f6d958663aa8ea119"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

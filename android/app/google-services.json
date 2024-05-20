@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "541696251868",
+    "project_id": "conecta-calculadora",
+    "storage_bucket": "conecta-calculadora.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541696251868:android:164e4a42f124dcb38ea119",
+        "android_client_info": {
+          "package_name": "com.example.counter_credit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcCzd7yExpnI-JmWs0h5NwsRoIeEicD38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
