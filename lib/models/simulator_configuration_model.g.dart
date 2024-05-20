@@ -15,7 +15,7 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       prazoMaximo: (json['prazoMaximo'] as num).toInt(),
       carenciaMinima: (json['carenciaMinima'] as num).toInt(),
       carenciaMaxima: (json['carenciaMaxima'] as num).toInt(),
-      bonusDia: (json['bonusDia'] as num?)?.toInt(),
+      bonusDia: (json['bonusDia'] as num?)?.toDouble(),
       nome: json['nome'] as String,
       descricao: json['descricao'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),

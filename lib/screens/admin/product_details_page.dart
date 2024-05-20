@@ -155,8 +155,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     if (response == null) {
       Provider.of<ProductListener>(context, listen: false)
           .notifyProductChanges();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Produto deletado com sucesso!'),
+        ),
+      );
       GoRouter.of(context).pop();
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro ao deletar produto'),
+        ),
+      );
       log('Error deleting product: ${response}');
     }
   }

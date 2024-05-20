@@ -14,7 +14,7 @@ class Product {
   int prazoMaximo;
   int carenciaMinima;
   int carenciaMaxima;
-  int? bonusDia;
+  double? bonusDia;
   String nome;
   String descricao;
   DateTime createdAt;

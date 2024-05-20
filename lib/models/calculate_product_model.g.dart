@@ -42,6 +42,7 @@ Parcela _$ParcelaFromJson(Map<String, dynamic> json) => Parcela(
       correcaoMonetaria: (json['correcaoMonetaria'] as num).toDouble(),
       juros: (json['juros'] as num).toDouble(),
       saldoDevedor: (json['saldoDevedor'] as num).toDouble(),
+      comBonus: (json['comBonus'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$ParcelaToJson(Parcela instance) => <String, dynamic>{
@@ -51,4 +52,5 @@ Map<String, dynamic> _$ParcelaToJson(Parcela instance) => <String, dynamic>{
       'correcaoMonetaria': instance.correcaoMonetaria,
       'juros': instance.juros,
       'saldoDevedor': instance.saldoDevedor,
+      'comBonus': instance.comBonus,
     };

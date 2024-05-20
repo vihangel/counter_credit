@@ -1,5 +1,6 @@
 import 'package:counter_credit/screens/admin/notify_product_listener.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,7 +25,7 @@ class _AddProductPageState extends State<AddProductPage> {
   int _prazoMaximo = 0;
   int _carenciaMinima = 0;
   int _carenciaMaxima = 0;
-  int? _bonusDia;
+  double? _bonusDia;
 
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
@@ -51,8 +52,7 @@ class _AddProductPageState extends State<AddProductPage> {
         GoRouter.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Erro ao salvar produto: ${response.message}')),
+          SnackBar(content: Text('Erro ao salvar produto: ${response}')),
         );
       }
     }
@@ -100,14 +100,18 @@ class _AddProductPageState extends State<AddProductPage> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
-                    decoration:
-                        const InputDecoration(labelText: 'Taxa de Juros (%)'),
+                    decoration: const InputDecoration(
+                        labelText: 'Taxa de Juros anual(%), ex:15,658'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) =>
-                        _taxaDeJuros = double.parse(value ?? '0'),
+                    onSaved: (value) => _taxaDeJuros =
+                        double.tryParse(value!.replaceAll(',', '.'))!,
                     validator: (value) {
-                      if (value == null || double.tryParse(value) == null) {
+                      if (value == null ||
+                          double.tryParse(value.replaceAll(',', '.')) == null) {
                         return 'Por favor, insira uma taxa de juros válida';
+                      }
+                      if (value.contains('.')) {
+                        return 'Não use caracteres especiais';
                       }
                       return null;
                     },
@@ -119,10 +123,14 @@ class _AddProductPageState extends State<AddProductPage> {
                         const InputDecoration(labelText: 'Crédito Mínimo'),
                     keyboardType: TextInputType.number,
                     onSaved: (value) =>
-                        _creditoMinimo = double.parse(value ?? '0'),
+                        double.tryParse(value!.replaceAll(',', '.'))!,
                     validator: (value) {
-                      if (value != null && double.tryParse(value) == null) {
+                      if (value == null ||
+                          double.tryParse(value.replaceAll(',', '.')) == null) {
                         return 'Por favor, insira um valor válido';
+                      }
+                      if (value.contains('.')) {
+                        return 'Não use caracteres especiais';
                       }
                       return null;
                     },
@@ -134,10 +142,14 @@ class _AddProductPageState extends State<AddProductPage> {
                         const InputDecoration(labelText: 'Crédito Máximo'),
                     keyboardType: TextInputType.number,
                     onSaved: (value) =>
-                        _creditoMaximo = double.parse(value ?? '0'),
+                        double.tryParse(value!.replaceAll(',', '.'))!,
                     validator: (value) {
-                      if (value != null && double.tryParse(value) == null) {
+                      if (value == null ||
+                          double.tryParse(value.replaceAll(',', '.')) == null) {
                         return 'Por favor, insira um valor válido';
+                      }
+                      if (value.contains('.')) {
+                        return 'Não use caracteres especiais';
                       }
                       return null;
                     },
@@ -149,6 +161,9 @@ class _AddProductPageState extends State<AddProductPage> {
                         labelText: 'Prazo Mínimo (meses)'),
                     keyboardType: TextInputType.number,
                     onSaved: (value) => _prazoMinimo = int.parse(value ?? '0'),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     validator: (value) {
                       if (value != null && int.tryParse(value) == null) {
                         return 'Por favor, insira um número de meses válido';
@@ -163,6 +178,9 @@ class _AddProductPageState extends State<AddProductPage> {
                         labelText: 'Prazo Máximo (meses)'),
                     keyboardType: TextInputType.number,
                     onSaved: (value) => _prazoMaximo = int.parse(value ?? '0'),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     validator: (value) {
                       if (value != null && int.tryParse(value) == null) {
                         return 'Por favor, insira um número de meses válido';
@@ -178,6 +196,9 @@ class _AddProductPageState extends State<AddProductPage> {
                     keyboardType: TextInputType.number,
                     onSaved: (value) =>
                         _carenciaMinima = int.parse(value ?? '0'),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     validator: (value) {
                       if (value != null && int.tryParse(value) == null) {
                         return 'Por favor, insira um número de meses válido';
@@ -193,6 +214,9 @@ class _AddProductPageState extends State<AddProductPage> {
                     keyboardType: TextInputType.number,
                     onSaved: (value) =>
                         _carenciaMaxima = int.parse(value ?? '0'),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     validator: (value) {
                       if (value != null && int.tryParse(value) == null) {
                         return 'Por favor, insira um número de meses válido';
@@ -203,11 +227,23 @@ class _AddProductPageState extends State<AddProductPage> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Bônus Dia'),
-                    keyboardType: TextInputType.number,
-                    onSaved: (value) => _bonusDia = int.tryParse(value ?? ''),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                  ),
+                      decoration: const InputDecoration(
+                          labelText: 'Bônus pagamento em dia'),
+                      keyboardType: TextInputType.number,
+                      onSaved: (value) => _bonusDia =
+                          double.tryParse(value!.replaceAll(',', '.'))!,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null ||
+                            double.tryParse(value.replaceAll(',', '.')) ==
+                                null) {
+                          return 'Por favor, insira um desconto válido';
+                        }
+                        if (value.contains('.')) {
+                          return 'Não use caracteres especiais';
+                        }
+                        return null;
+                      }),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _saveProduct,

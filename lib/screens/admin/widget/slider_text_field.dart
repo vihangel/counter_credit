@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class SliderTextField extends StatefulWidget {
   final String labelText;
@@ -9,12 +10,14 @@ class SliderTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
   final String? unit;
+  final bool isDecimal;
 
   const SliderTextField({
     required this.labelText,
     required this.min,
     required this.max,
     required this.controller,
+    this.isDecimal = false,
     this.validator,
     this.unit,
     this.keyboardType = const TextInputType.numberWithOptions(decimal: true),
@@ -27,20 +30,24 @@ class SliderTextField extends StatefulWidget {
 
 class SliderTextFieldState extends State<SliderTextField> {
   late double _currentSliderValue;
+  final NumberFormat _numberFormat = NumberFormat.decimalPattern('pt_BR');
 
   @override
   void initState() {
     super.initState();
     _currentSliderValue = double.tryParse(widget.controller.text) ?? widget.min;
-    widget.controller.addListener(_updateSliderFromController);
+    widget.controller.text = _numberFormat.format(_currentSliderValue);
+    // widget.controller.addListener(_updateSliderFromController);
   }
 
   void _updateSliderFromController() {
-    double? newValue = double.tryParse(widget.controller.text);
+    double? newValue =
+        double.tryParse(widget.controller.text.replaceAll(',', '.'));
     if (newValue != null && newValue >= widget.min && newValue <= widget.max) {
       if (_currentSliderValue != newValue) {
         setState(() {
           _currentSliderValue = newValue;
+          widget.controller.text = _numberFormat.format(newValue);
         });
       }
     }
@@ -48,10 +55,6 @@ class SliderTextFieldState extends State<SliderTextField> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDecimal = widget.keyboardType ==
-        const TextInputType.numberWithOptions(decimal: true);
-    String decimalPattern = isDecimal ? r'^\d*\.?\d*' : r'^\d*';
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -73,12 +76,24 @@ class SliderTextFieldState extends State<SliderTextField> {
                     border: const OutlineInputBorder(),
                     suffixText: widget.unit,
                   ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: widget.controller,
                   keyboardType: widget.keyboardType,
                   validator: widget.validator,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(decimalPattern)),
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                   ],
+                  onChanged: (value) {
+                    if (value.isNotEmpty) {
+                      double newValue =
+                          double.tryParse(value.replaceAll(',', '.')) ?? 0;
+                      if (newValue >= widget.min && newValue <= widget.max) {
+                        setState(() {
+                          _currentSliderValue = newValue;
+                        });
+                      }
+                    }
+                  },
                 ),
               ),
             ],
@@ -88,22 +103,32 @@ class SliderTextFieldState extends State<SliderTextField> {
           value: _currentSliderValue,
           min: widget.min,
           max: widget.max,
-          divisions: isDecimal ? 100 : widget.max.toInt() - widget.min.toInt(),
+          divisions:
+              widget.isDecimal ? 100 : widget.max.toInt() - widget.min.toInt(),
           onChanged: (double value) {
+            if (widget.isDecimal) {
+              widget.controller.text =
+                  value.toStringAsFixed(2).replaceAll('.', ',');
+            } else {
+              widget.controller.text = value.toInt().toString();
+            }
             setState(() {
               _currentSliderValue = value;
-              widget.controller.text = isDecimal
-                  ? value.toStringAsFixed(2)
-                  : value.toInt().toString();
             });
           },
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.min.toStringAsFixed(2),
+            Text(
+                widget.isDecimal
+                    ? widget.min.toStringAsFixed(2).replaceAll('.', ',')
+                    : widget.min.toInt().toString(),
                 style: const TextStyle(color: Colors.grey)),
-            Text(widget.max.toStringAsFixed(2),
+            Text(
+                widget.isDecimal
+                    ? widget.max.toStringAsFixed(2).replaceAll('.', ',')
+                    : widget.max.toInt().toString(),
                 style: const TextStyle(color: Colors.grey)),
           ],
         )

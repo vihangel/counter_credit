@@ -27,9 +27,9 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
   double _minCredit = 0;
   double _maxCredit = 10000;
   double _minPayment = 0;
-  double _maxPayment = 120;
+  double _maxPayment = 12;
   double _minGrace = 0;
-  double _maxGrace = 24;
+  double _maxGrace = 12;
 
   Simulate? simulate;
 
@@ -73,6 +73,9 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                     onChanged: (newValue) {
                       setState(() {
                         _selectedProduct = newValue!;
+                        _creditController.clear();
+                        _paymentController.clear();
+                        _gracePeriodController.clear();
                         _updateProductSettings();
                       });
                     },
@@ -87,9 +90,12 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                   ),
                   const SizedBox(height: 16),
                   SliderTextField(
+                    key: Key(
+                        'credit+$_minCredit+$_maxCredit+${_selectedProduct?.nome}'),
                     labelText: 'Valor do Crédito',
                     min: _minCredit,
                     max: _maxCredit,
+                    isDecimal: true,
                     controller: _creditController,
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
@@ -97,11 +103,16 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Este campo é obrigatório';
                       }
+                      if (value.contains('.')) {
+                        return 'Não use caracteres especiais';
+                      }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   SliderTextField(
+                    key: Key(
+                        'payment+$_minPayment+$_maxPayment+${_selectedProduct?.nome}'),
                     labelText: 'Prazo de Pagamento (meses)',
                     min: _minPayment,
                     max: _maxPayment,
@@ -111,11 +122,17 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Este campo é obrigatório';
                       }
+                      if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                        return 'Apenas números são permitidos';
+                      }
+
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   SliderTextField(
+                    key: Key(
+                        'gracePeriod+$_minGrace+$_maxGrace+${_selectedProduct?.nome}'),
                     labelText: 'Prazo de Carência (meses)',
                     min: _minGrace,
                     max: _maxGrace,
@@ -167,6 +184,11 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
         _products.addAll(products);
       });
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro ao buscar produtosm, atualize a página!'),
+        ),
+      );
       log('Error fetching products: $e');
     }
   }
@@ -190,7 +212,8 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
   void _simulateInstallments() {
     if (_formKey.currentState!.validate()) {
       simulate = Simulate(
-        valorFinanciamento: double.parse(_creditController.text),
+        valorFinanciamento:
+            double.parse(_creditController.text.replaceAll(',', '.')),
         prazoPagamento: int.parse(_paymentController.text),
         carenciaMeses: int.parse(_gracePeriodController.text),
         product: _selectedProduct!,

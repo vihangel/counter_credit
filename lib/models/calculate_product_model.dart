@@ -38,6 +38,7 @@ class Parcela {
   double correcaoMonetaria;
   double juros;
   double saldoDevedor;
+  double comBonus;
 
   Parcela({
     required this.parcela,
@@ -46,6 +47,7 @@ class Parcela {
     required this.correcaoMonetaria,
     required this.juros,
     required this.saldoDevedor,
+    this.comBonus = 0,
   });
 
   factory Parcela.fromJson(Map<String, dynamic> json) =>
