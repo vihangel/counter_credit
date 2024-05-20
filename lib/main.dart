@@ -22,7 +22,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => ProductListener(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

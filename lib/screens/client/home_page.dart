@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:counter_credit/models/simulate.dart';
 import 'package:counter_credit/models/simulator_configuration_model.dart';
 import 'package:counter_credit/screens/admin/widget/slider_text_field.dart';
-import 'package:counter_credit/screens/client/widget/simulate_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -143,14 +142,6 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                       ),
                     ),
                   ),
-                  simulate == null
-                      ? Container()
-                      : SimulateView(
-                          simulate: simulate!,
-                          payment: _paymentController.text,
-                          credit: _creditController.text,
-                          gracePeriod: _gracePeriodController.text,
-                        ),
                 ],
               ),
             ),
@@ -198,14 +189,13 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
 
   void _simulateInstallments() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        simulate = Simulate(
-          valorFinanciamento: double.parse(_creditController.text),
-          prazoPagamento: int.parse(_paymentController.text),
-          carenciaMeses: int.parse(_gracePeriodController.text),
-          product: _selectedProduct!,
-        );
-      });
+      simulate = Simulate(
+        valorFinanciamento: double.parse(_creditController.text),
+        prazoPagamento: int.parse(_paymentController.text),
+        carenciaMeses: int.parse(_gracePeriodController.text),
+        product: _selectedProduct!,
+      );
+      context.go('/simulacao', extra: simulate);
     }
   }
 }

@@ -2,7 +2,11 @@ import 'dart:math';
 
 import 'package:counter_credit/models/calculate_product_model.dart';
 import 'package:counter_credit/models/simulator_configuration_model.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'simulate.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Simulate {
   double valorFinanciamento;
   Product product;
@@ -69,4 +73,9 @@ class Simulate {
       valorFinanciamento: valorFinanciamento,
     );
   }
+
+  factory Simulate.fromJson(Map<String, dynamic> json) =>
+      _$SimulateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SimulateToJson(this);
 }
