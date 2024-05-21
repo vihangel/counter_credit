@@ -68,6 +68,7 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                   DropdownButtonFormField<Product>(
                     isExpanded: true,
                     value: _selectedProduct,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration:
                         const InputDecoration(labelText: 'Escolha o Produto'),
                     onChanged: (newValue) {
@@ -103,8 +104,11 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Este campo é obrigatório';
                       }
-                      if (value.contains('.')) {
-                        return 'Não use caracteres especiais';
+                      if (textToDouble(_creditController.text) > _maxCredit) {
+                        return 'O crédito deve ser menor que $_maxCredit';
+                      }
+                      if (textToDouble(_creditController.text) < _minCredit) {
+                        return 'O crédito deve ser maior que $_minCredit';
                       }
                       return null;
                     },
@@ -125,6 +129,17 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                       if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                         return 'Apenas números são permitidos';
                       }
+                      if (textToDouble(_paymentController.text) < _minPayment) {
+                        return 'O prazo de pagamento deve ser maior que $_minPayment';
+                      }
+                      if (textToDouble(_paymentController.text) > _maxPayment) {
+                        return 'O prazo de pagamento deve ser menor que $_maxPayment';
+                      }
+                      if (textToDouble(_paymentController.text) <
+                              textToDouble(_gracePeriodController.text) &&
+                          _gracePeriodController.text.isNotEmpty) {
+                        return 'O prazo de pagamento deve ser maior\nque o prazo de carência';
+                      }
 
                       return null;
                     },
@@ -141,6 +156,18 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Este campo é obrigatório';
+                      }
+                      if (textToDouble(_gracePeriodController.text) <
+                          _minGrace) {
+                        return 'O prazo de carência deve ser maior que $_minGrace';
+                      }
+                      if (textToDouble(_gracePeriodController.text) >
+                          _maxGrace) {
+                        return 'O prazo de carência deve ser menor que $_maxGrace';
+                      }
+                      if (textToDouble(_gracePeriodController.text) >=
+                          textToDouble(_paymentController.text)) {
+                        return 'O prazo de carência deve ser menor\nque o prazo de pagamento';
                       }
                       return null;
                     },
@@ -193,6 +220,15 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
     }
   }
 
+  double textToDouble(String text) {
+    double? parsedValue =
+        double.tryParse(text.replaceAll('.', '').replaceAll(',', '.'));
+    if (parsedValue != null) {
+      return parsedValue;
+    }
+    return 0;
+  }
+
   void _updateProductSettings() {
     if (_selectedProduct != null) {
       _minCredit = _selectedProduct!.creditoMinimo;
@@ -212,8 +248,7 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
   void _simulateInstallments() {
     if (_formKey.currentState!.validate()) {
       simulate = Simulate(
-        valorFinanciamento:
-            double.parse(_creditController.text.replaceAll(',', '.')),
+        valorFinanciamento: textToDouble(_creditController.text),
         prazoPagamento: int.parse(_paymentController.text),
         carenciaMeses: int.parse(_gracePeriodController.text),
         product: _selectedProduct!,

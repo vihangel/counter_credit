@@ -2,6 +2,7 @@ import 'package:counter_credit/screens/admin/notify_product_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -26,6 +27,12 @@ class _AddProductPageState extends State<AddProductPage> {
   int _carenciaMinima = 0;
   int _carenciaMaxima = 0;
   double? _bonusDia;
+
+  final _creditoFormatter = MaskTextInputFormatter(
+    mask: '###.###.###,##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
 
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
@@ -56,6 +63,11 @@ class _AddProductPageState extends State<AddProductPage> {
         );
       }
     }
+  }
+
+  double _parseCurrency(String value) {
+    return double.tryParse(value.replaceAll('.', '').replaceAll(',', '.')) ??
+        0.0;
   }
 
   @override
@@ -122,15 +134,11 @@ class _AddProductPageState extends State<AddProductPage> {
                     decoration:
                         const InputDecoration(labelText: 'Crédito Mínimo'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) =>
-                        double.tryParse(value!.replaceAll(',', '.'))!,
+                    onSaved: (value) => _creditoMinimo = _parseCurrency(value!),
+                    inputFormatters: [_creditoFormatter],
                     validator: (value) {
-                      if (value == null ||
-                          double.tryParse(value.replaceAll(',', '.')) == null) {
+                      if (value == null || _parseCurrency(value) < 0.0) {
                         return 'Por favor, insira um valor válido';
-                      }
-                      if (value.contains('.')) {
-                        return 'Não use caracteres especiais';
                       }
                       return null;
                     },
@@ -141,15 +149,11 @@ class _AddProductPageState extends State<AddProductPage> {
                     decoration:
                         const InputDecoration(labelText: 'Crédito Máximo'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) =>
-                        double.tryParse(value!.replaceAll(',', '.'))!,
+                    onSaved: (value) => _creditoMaximo = _parseCurrency(value!),
+                    inputFormatters: [_creditoFormatter],
                     validator: (value) {
-                      if (value == null ||
-                          double.tryParse(value.replaceAll(',', '.')) == null) {
+                      if (value == null || _parseCurrency(value) == 0.0) {
                         return 'Por favor, insira um valor válido';
-                      }
-                      if (value.contains('.')) {
-                        return 'Não use caracteres especiais';
                       }
                       return null;
                     },
@@ -227,23 +231,23 @@ class _AddProductPageState extends State<AddProductPage> {
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
-                      decoration: const InputDecoration(
-                          labelText: 'Bônus pagamento em dia'),
-                      keyboardType: TextInputType.number,
-                      onSaved: (value) => _bonusDia =
-                          double.tryParse(value!.replaceAll(',', '.'))!,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) {
-                        if (value == null ||
-                            double.tryParse(value.replaceAll(',', '.')) ==
-                                null) {
-                          return 'Por favor, insira um desconto válido';
-                        }
-                        if (value.contains('.')) {
-                          return 'Não use caracteres especiais';
-                        }
-                        return null;
-                      }),
+                    decoration: const InputDecoration(
+                        labelText: 'Bônus pagamento em dia'),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) => _bonusDia =
+                        double.tryParse(value!.replaceAll(',', '.'))!,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null ||
+                          double.tryParse(value.replaceAll(',', '.')) == null) {
+                        return 'Por favor, insira um desconto válido';
+                      }
+                      if (value.contains('.')) {
+                        return 'Não use caracteres especiais';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _saveProduct,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SliderTextField extends StatefulWidget {
   final String labelText;
@@ -30,27 +30,49 @@ class SliderTextField extends StatefulWidget {
 
 class SliderTextFieldState extends State<SliderTextField> {
   late double _currentSliderValue;
-  final NumberFormat _numberFormat = NumberFormat.decimalPattern('pt_BR');
+  final NumberFormat _numberFormat =
+      NumberFormat.currency(locale: 'pt_BR', symbol: '', decimalDigits: 2);
+
+  final maskFormatter = MaskTextInputFormatter(
+    mask: '###.###.###,##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
 
   @override
   void initState() {
     super.initState();
-    _currentSliderValue = double.tryParse(widget.controller.text) ?? widget.min;
-    widget.controller.text = _numberFormat.format(_currentSliderValue);
-    // widget.controller.addListener(_updateSliderFromController);
+    _currentSliderValue = double.tryParse(
+            widget.controller.text.replaceAll('.', '').replaceAll(',', '.')) ??
+        widget.min;
+    widget.controller.text =
+        widget.isDecimal ? _formatCurrency(_currentSliderValue) : "0";
+    widget.controller.addListener(_updateSliderFromController);
   }
 
   void _updateSliderFromController() {
-    double? newValue =
-        double.tryParse(widget.controller.text.replaceAll(',', '.'));
+    double? newValue = double.tryParse(
+        widget.controller.text.replaceAll('.', '').replaceAll(',', '.'));
     if (newValue != null && newValue >= widget.min && newValue <= widget.max) {
       if (_currentSliderValue != newValue) {
         setState(() {
           _currentSliderValue = newValue;
-          widget.controller.text = _numberFormat.format(newValue);
         });
       }
     }
+  }
+
+  String _formatCurrency(double value) {
+    return _numberFormat.format(value);
+  }
+
+  String _formatInput(String input) {
+    double? parsedValue =
+        double.tryParse(input.replaceAll('.', '').replaceAll(',', '.'));
+    if (parsedValue != null) {
+      return _numberFormat.format(parsedValue);
+    }
+    return input;
   }
 
   @override
@@ -75,22 +97,44 @@ class SliderTextFieldState extends State<SliderTextField> {
                     hintText: 'Digite um valor',
                     border: const OutlineInputBorder(),
                     suffixText: widget.unit,
+                    errorStyle: const TextStyle(overflow: TextOverflow.visible),
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: widget.controller,
                   keyboardType: widget.keyboardType,
                   validator: widget.validator,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
-                  ],
+                  inputFormatters: widget.isDecimal ? [maskFormatter] : null,
+                  onFieldSubmitted: (value) {
+                    setState(() {
+                      widget.controller.text = _formatInput(value);
+                    });
+                  },
                   onChanged: (value) {
                     if (value.isNotEmpty) {
-                      double newValue =
-                          double.tryParse(value.replaceAll(',', '.')) ?? 0;
-                      if (newValue >= widget.min && newValue <= widget.max) {
-                        setState(() {
-                          _currentSliderValue = newValue;
-                        });
+                      if (widget.isDecimal) {
+                        double newValue = double.tryParse(value
+                                .replaceAll('.', '')
+                                .replaceAll(',', '.')) ??
+                            0;
+                        if (newValue >= widget.min && newValue <= widget.max) {
+                          setState(() {
+                            _currentSliderValue = newValue;
+                          });
+                        }
+
+                        widget.controller.text = _formatInput(value);
+
+                        widget.controller.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(offset: widget.controller.text.length),
+                        );
+                      } else {
+                        int newValue = int.tryParse(value) ?? 0;
+                        if (newValue >= widget.min && newValue <= widget.max) {
+                          setState(() {
+                            _currentSliderValue = newValue.toDouble();
+                          });
+                        }
                       }
                     }
                   },
@@ -106,12 +150,9 @@ class SliderTextFieldState extends State<SliderTextField> {
           divisions:
               widget.isDecimal ? 100 : widget.max.toInt() - widget.min.toInt(),
           onChanged: (double value) {
-            if (widget.isDecimal) {
-              widget.controller.text =
-                  value.toStringAsFixed(2).replaceAll('.', ',');
-            } else {
-              widget.controller.text = value.toInt().toString();
-            }
+            widget.controller.text = widget.isDecimal
+                ? _formatCurrency(value)
+                : value.toInt().toString();
             setState(() {
               _currentSliderValue = value;
             });
@@ -122,12 +163,12 @@ class SliderTextFieldState extends State<SliderTextField> {
           children: [
             Text(
                 widget.isDecimal
-                    ? widget.min.toStringAsFixed(2).replaceAll('.', ',')
+                    ? _formatCurrency(widget.min)
                     : widget.min.toInt().toString(),
                 style: const TextStyle(color: Colors.grey)),
             Text(
                 widget.isDecimal
-                    ? widget.max.toStringAsFixed(2).replaceAll('.', ',')
+                    ? _formatCurrency(widget.max)
                     : widget.max.toInt().toString(),
                 style: const TextStyle(color: Colors.grey)),
           ],

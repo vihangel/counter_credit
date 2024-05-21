@@ -43,6 +43,7 @@ class _SimulatePageState extends State<SimulatePage> {
     if (product == null) {
       return const Center(child: CircularProgressIndicator());
     }
+    final double? bonus = product!.product?.bonusDia;
 
     return Scaffold(
       appBar: AppBar(
@@ -73,6 +74,7 @@ class _SimulatePageState extends State<SimulatePage> {
                         style: Theme.of(context).textTheme.displayMedium,
                         textAlign: TextAlign.left,
                       ),
+                      const SizedBox(height: 16),
                       Text(
                         textAlign: TextAlign.left,
                         'Valor do Crédito: ${formatCurrency(
@@ -90,6 +92,17 @@ class _SimulatePageState extends State<SimulatePage> {
                         'Amortização: ${widget.gracePeriod} ${widget.gracePeriod == '1' ? 'mês' : 'meses'}',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
+                      if (bonus != null)
+                        Text(
+                          textAlign: TextAlign.left,
+                          'Bônus de pagamento em dia: $bonus%',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                color: const Color.fromARGB(255, 8, 160, 86),
+                              ),
+                        )
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -138,15 +151,18 @@ class _SimulatePageState extends State<SimulatePage> {
                         flex: 3,
                         fit: FlexFit.tight,
                         child: Text(
-                          'Saldo Devedor',
+                          'Bônus Pag. Dia',
                           textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 8, 160, 86),
+                          ),
                         ),
                       ),
                       Flexible(
                         flex: 3,
                         fit: FlexFit.tight,
                         child: Text(
-                          'Bônus Pag. Dia',
+                          'Saldo Devedor',
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -193,15 +209,21 @@ class _SimulatePageState extends State<SimulatePage> {
                                 child: Text(formatCurrency(parcela.valor),
                                     textAlign: TextAlign.left)),
                             Flexible(
+                              flex: 3,
+                              fit: FlexFit.tight,
+                              child: Text(
+                                formatCurrency(parcela.comBonus),
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 8, 160, 86),
+                                ),
+                              ),
+                            ),
+                            Flexible(
                                 flex: 3,
                                 fit: FlexFit.tight,
                                 child: Text(
                                     formatCurrency(parcela.saldoDevedor),
-                                    textAlign: TextAlign.left)),
-                            Flexible(
-                                flex: 3,
-                                fit: FlexFit.tight,
-                                child: Text(formatCurrency(parcela.comBonus),
                                     textAlign: TextAlign.left)),
                           ],
                         ),
