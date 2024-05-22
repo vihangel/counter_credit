@@ -1,10 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:counter_credit/models/simulator_configuration_model.dart';
 import 'package:counter_credit/screens/admin/notify_product_listener.dart';
+import 'package:counter_credit/service/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -15,7 +18,6 @@ class AddProductPage extends StatefulWidget {
 
 class _AddProductPageState extends State<AddProductPage> {
   final _formKey = GlobalKey<FormState>();
-  final _supabaseClient = Supabase.instance.client;
 
   String _nome = '';
   String _descricao = '';
@@ -37,31 +39,32 @@ class _AddProductPageState extends State<AddProductPage> {
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final response = await _supabaseClient.from('produtos').insert({
-        'nome': _nome,
-        'descricao': _descricao,
-        'taxaDeJuros': _taxaDeJuros,
-        'creditoMinimo': _creditoMinimo,
-        'creditoMaximo': _creditoMaximo,
-        'prazoMinimo': _prazoMinimo,
-        'prazoMaximo': _prazoMaximo,
-        'carenciaMinima': _carenciaMinima,
-        'carenciaMaxima': _carenciaMaxima,
-        'bonusDia': _bonusDia,
-      });
+      final ProductService productService = ProductService();
 
-      if (response == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Produto adicionado com sucesso!')),
-        );
-        Provider.of<ProductListener>(context, listen: false)
-            .notifyProductChanges();
-        GoRouter.of(context).pop();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar produto: ${response}')),
-        );
-      }
+      await productService.addProductWithAutoId(Product(
+          carenciaMaxima: _carenciaMaxima,
+          carenciaMinima: _carenciaMinima,
+          createdAt: DateTime.now(),
+          creditoMaximo: _creditoMaximo,
+          creditoMinimo: _creditoMinimo,
+          descricao: _descricao,
+          id: '',
+          nome: _nome,
+          prazoMaximo: _prazoMaximo,
+          prazoMinimo: _prazoMinimo,
+          taxaDeJuros: _taxaDeJuros,
+          updatedAt: DateTime.now(),
+          bonusDia: _bonusDia));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Produto adicionado com sucesso!')),
+      );
+      Provider.of<ProductListener>(context, listen: false)
+          .notifyProductChanges();
+      GoRouter.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar produto.')),
+      );
     }
   }
 

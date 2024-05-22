@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "541696251868",
+    "firebase_url": "https://conecta-calculadora-default-rtdb.firebaseio.com",
     "project_id": "conecta-calculadora",
     "storage_bucket": "conecta-calculadora.appspot.com"
   },

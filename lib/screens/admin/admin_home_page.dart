@@ -3,10 +3,11 @@ import 'dart:developer';
 import 'package:counter_credit/models/simulator_configuration_model.dart';
 import 'package:counter_credit/screens/admin/notify_product_listener.dart';
 import 'package:counter_credit/screens/admin/widget/product_listtile_button.dart';
+import 'package:counter_credit/service/product_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePageAdmin extends StatefulWidget {
   const HomePageAdmin({super.key});
@@ -17,7 +18,6 @@ class HomePageAdmin extends StatefulWidget {
 
 class HomePageAdminState extends State<HomePageAdmin> {
   final List<Product> _products = [];
-  final _supabaseClient = Supabase.instance.client;
 
   @override
   void initState() {
@@ -33,27 +33,25 @@ class HomePageAdminState extends State<HomePageAdmin> {
     super.dispose();
   }
 
+  final ProductService productService = ProductService();
   void _fetchProducts() async {
     try {
-      final List<Product> products = [];
-      final productResponse = await _supabaseClient.from('produtos').select();
-
-      for (var p in productResponse) {
-        Product product = Product.fromJson(p);
-
-        products.add(product);
-      }
-
+      final List<Product> products = await productService.getProducts();
       setState(() {
         _products.clear();
         _products.addAll(products);
       });
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro ao buscar produtos, atualize a página!'),
+        ),
+      );
       log('Error fetching products: $e');
     }
   }
 
-  void showDialogDelete(int productId) {
+  void showDialogDelete(String productId) {
     showDialog(
       context: context,
       builder: (context) {
@@ -68,9 +66,9 @@ class HomePageAdminState extends State<HomePageAdmin> {
               child: const Text('Cancelar'),
             ),
             TextButton(
-              onPressed: () {
-                GoRouter.of(context).pop();
+              onPressed: () async {
                 _deleteProduct(productId);
+                GoRouter.of(context).pop();
               },
               child: const Text('Deletar'),
             ),
@@ -80,16 +78,18 @@ class HomePageAdminState extends State<HomePageAdmin> {
     );
   }
 
-  void _deleteProduct(int productId) async {
-    final response = await _supabaseClient
-        .from('produtos')
-        .delete()
-        .match({'id': productId});
+  void _deleteProduct(String productId) async {
+    try {
+      await productService.deleteProduct(productId);
 
-    if (response == null) {
       _fetchProducts();
-    } else {
-      log('Error deleting product: ${response}');
+    } catch (e) {
+      log('Error deleting product: ${e}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro ao remover o produto, atualize a página!'),
+        ),
+      );
     }
   }
 
@@ -116,8 +116,7 @@ class HomePageAdminState extends State<HomePageAdmin> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              Supabase.instance.client.auth.signOut();
-              GoRouter.of(context).go('/login');
+              FirebaseAuth.instance.signOut();
             },
           ),
         ],

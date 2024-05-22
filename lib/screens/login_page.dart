@@ -1,6 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,9 +14,12 @@ class LoginPageState extends State<LoginPage> {
 
   void _login(context) async {
     try {
-      await Supabase.instance.client.auth.signInWithPassword(
-          password: _passwordController.text, email: _emailController.text);
-      GoRouter.of(context).go('/admin');
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      // GoRouter.of(context).go('/admin');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

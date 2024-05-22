@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:counter_credit/models/simulate.dart';
 import 'package:counter_credit/models/simulator_configuration_model.dart';
 import 'package:counter_credit/screens/admin/widget/slider_text_field.dart';
+import 'package:counter_credit/service/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CreditSimulatorScreen extends StatefulWidget {
   const CreditSimulatorScreen({super.key});
@@ -15,7 +15,6 @@ class CreditSimulatorScreen extends StatefulWidget {
 }
 
 class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
-  final SupabaseClient _supabaseClient = Supabase.instance.client;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final List<Product> _products = [];
@@ -197,15 +196,8 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
 
   void _fetchProducts() async {
     try {
-      final List<Product> products = [];
-      final productResponse = await _supabaseClient.from('produtos').select();
-
-      for (var p in productResponse) {
-        Product product = Product.fromJson(p);
-
-        products.add(product);
-      }
-
+      final ProductService productService = ProductService();
+      final List<Product> products = await productService.getProducts();
       setState(() {
         _products.clear();
         _products.addAll(products);
@@ -213,7 +205,7 @@ class CreditSimulatorScreenState extends State<CreditSimulatorScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Erro ao buscar produtosm, atualize a página!'),
+          content: Text('Erro ao buscar produtos, atualize a página!'),
         ),
       );
       log('Error fetching products: $e');

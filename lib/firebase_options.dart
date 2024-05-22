@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '541696251868',
     projectId: 'conecta-calculadora',
     authDomain: 'conecta-calculadora.firebaseapp.com',
+    databaseURL: 'https://conecta-calculadora-default-rtdb.firebaseio.com',
     storageBucket: 'conecta-calculadora.appspot.com',
     measurementId: 'G-G8G1T3T9FS',
   );
@@ -55,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:541696251868:android:164e4a42f124dcb38ea119',
     messagingSenderId: '541696251868',
     projectId: 'conecta-calculadora',
+    databaseURL: 'https://conecta-calculadora-default-rtdb.firebaseio.com',
     storageBucket: 'conecta-calculadora.appspot.com',
   );
 
@@ -63,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:541696251868:ios:5a0080036c086a9d8ea119',
     messagingSenderId: '541696251868',
     projectId: 'conecta-calculadora',
+    databaseURL: 'https://conecta-calculadora-default-rtdb.firebaseio.com',
     storageBucket: 'conecta-calculadora.appspot.com',
     iosBundleId: 'com.example.counterCredit',
   );
@@ -72,6 +75,7 @@ class DefaultFirebaseOptions {
     appId: '1:541696251868:ios:5a0080036c086a9d8ea119',
     messagingSenderId: '541696251868',
     projectId: 'conecta-calculadora',
+    databaseURL: 'https://conecta-calculadora-default-rtdb.firebaseio.com',
     storageBucket: 'conecta-calculadora.appspot.com',
     iosBundleId: 'com.example.counterCredit',
   );
@@ -82,7 +86,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '541696251868',
     projectId: 'conecta-calculadora',
     authDomain: 'conecta-calculadora.firebaseapp.com',
+    databaseURL: 'https://conecta-calculadora-default-rtdb.firebaseio.com',
     storageBucket: 'conecta-calculadora.appspot.com',
     measurementId: 'G-WQJC55VHLX',
   );
+
 }

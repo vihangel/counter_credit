@@ -5,16 +5,16 @@ import 'package:counter_credit/screens/admin/product_details_page.dart';
 import 'package:counter_credit/screens/client/home_page.dart';
 import 'package:counter_credit/screens/client/simulate_page.dart';
 import 'package:counter_credit/screens/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
   redirect: (context, state) {
-    final loggedIn = Supabase.instance.client.auth.currentUser != null;
+    final loggedIn = FirebaseAuth.instance.currentUser != null;
     final goingToLogin = state.fullPath == '/login';
 
     if ((state.fullPath == '/' || state.fullPath == '/simulacao')) {

@@ -7,7 +7,7 @@ part of 'simulator_configuration_model.dart';
 // **************************************************************************
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
-      id: (json['id'] as num).toInt(),
+      id: json['id'] as String,
       taxaDeJuros: (json['taxaDeJuros'] as num).toDouble(),
       creditoMinimo: (json['creditoMinimo'] as num).toDouble(),
       creditoMaximo: (json['creditoMaximo'] as num).toDouble(),

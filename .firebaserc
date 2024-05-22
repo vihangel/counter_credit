@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "conecta-calculadora"
-  }
+    "default": "conecta-calculadora",
+    "s": "conecta-calculadora"
+  },
+  "targets": {},
+  "etags": {}
 }

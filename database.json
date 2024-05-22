@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "taxaDeJuros": 15.9874,
+        "creditoMinimo": 0,
+        "creditoMaximo": 1500000,
+        "prazoMinimo": 0,
+        "prazoMaximo": 120,
+        "carenciaMinima": 0,
+        "carenciaMaxima": 12,
+        "descricao": "Financiamentos de obra civil, máquinas e equipamentos e de bens vinculados a projetos que envolvam implantação, ampliação ou modernização com capital de giro associado.",
+        "createdAt": "2021-06-23T19:10:24+00:00",
+        "updatedAt": "2024-03-01T18:05:45+00:00",
+        "nome": "DESENVOLVE EMPRESARIAL - INVEST",
+        "bonusDia": 0
+    },
+    {
+        "id": 2,
+        "taxaDeJuros": 16.3192,
+        "creditoMinimo": 0,
+        "creditoMaximo": 1500000,
+        "prazoMinimo": 0,
+        "prazoMaximo": 120,
+        "carenciaMinima": 0,
+        "carenciaMaxima": 12,
+        "descricao": "Financiamentos de máquinas e equipamentos que contenham elementos de fábrica que os permitam ser individualizados, dados em garantia e contenham número de fabricação ou série.",
+        "createdAt": "2024-05-19T22:59:37.636711+00:00",
+        "updatedAt": "2024-05-19T22:59:37.636711+00:00",
+        "nome": "EMPRESARIAL - INVEST MIX",
+        "bonusDia": 0
+    },
+    {
+        "id": 14,
+        "taxaDeJuros": 12.56,
+        "creditoMinimo": 0,
+        "creditoMaximo": 12333,
+        "prazoMinimo": 1,
+        "prazoMaximo": 24,
+        "carenciaMinima": 1,
+        "carenciaMaxima": 23,
+        "descricao": "bonus",
+        "createdAt": "2024-05-20T14:30:37.446128+00:00",
+        "updatedAt": "2024-05-20T14:30:37.446128+00:00",
+        "nome": "teste bonus",
+        "bonusDia": 30.5
+    },
+    {
+        "id": 16,
+        "taxaDeJuros": 14.5,
+        "creditoMinimo": 0,
+        "creditoMaximo": 150000,
+        "prazoMinimo": 0,
+        "prazoMaximo": 60,
+        "carenciaMinima": 0,
+        "carenciaMaxima": 12,
+        "descricao": "dsadasdas",
+        "createdAt": "2024-05-21T23:11:09.489348+00:00",
+        "updatedAt": "2024-05-21T23:11:09.489348+00:00",
+        "nome": "teste bonus 2",
+        "bonusDia": 15.06
+    }
+]

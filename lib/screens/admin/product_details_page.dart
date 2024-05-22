@@ -4,10 +4,10 @@ import 'dart:developer';
 
 import 'package:counter_credit/models/simulator_configuration_model.dart';
 import 'package:counter_credit/screens/admin/notify_product_listener.dart';
+import 'package:counter_credit/service/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String productId;
@@ -19,7 +19,6 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  final _supabaseClient = Supabase.instance.client;
   Product? _product;
 
   @override
@@ -30,13 +29,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   void _fetchProduct() async {
     try {
-      final productResponse = await _supabaseClient
-          .from('produtos')
-          .select()
-          .eq('id', widget.productId)
-          .single();
-
-      final product = Product.fromJson(productResponse);
+      final Product product = await productService.getProduct(widget.productId);
 
       setState(() {
         _product = product;
@@ -146,13 +139,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  void _deleteProduct(int productId) async {
-    final response = await _supabaseClient
-        .from('produtos')
-        .delete()
-        .match({'id': productId});
+  final productService = ProductService();
 
-    if (response == null) {
+  void _deleteProduct(String productId) async {
+    try {
+      await productService.deleteProduct(productId);
+
       Provider.of<ProductListener>(context, listen: false)
           .notifyProductChanges();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -161,13 +153,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
       );
       GoRouter.of(context).pop();
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Erro ao deletar produto'),
         ),
       );
-      log('Error deleting product: ${response}');
+      log('Error deleting product: ${e}');
     }
   }
 }
