@@ -230,6 +230,70 @@ class _SimulatePageState extends State<SimulatePage> {
                       );
                     }),
                   ),
+                  const SizedBox(height: 16),
+                  const Divider(),
+                  Flex(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    direction: Axis.horizontal,
+                    children: [
+                      const Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: Text('Total', textAlign: TextAlign.left),
+                      ),
+                      Flexible(
+                        flex: 2,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          formatCurrency(product!.correcaoMonetariaTotal),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          formatCurrency(product!.jurosTotal),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          formatCurrency(product!.amortizacaoTotal),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          formatCurrency(product!.valorTotal),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          formatCurrency(product!.bonusTotal),
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 8, 160, 86),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: Text(
+                          formatCurrency(product!.valorFinanciamento),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   const Text(
                       '(*) Os valores das prestações são aproximados. As opções apresentadas não valem como proposta e representam apenas uma simulação com o intuito de subsidiar a tomada de decisão. Até a contratação da operação, a taxa de juros, prazo e demais condições podem ser alteradas sem prévio aviso. As operações de crédito estão sujeitas à análise e aprovação da Desenvolve MT.'),

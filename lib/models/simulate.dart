@@ -34,9 +34,7 @@ class Simulate {
 
     for (int i = 1; i <= carenciaMeses; i++) {
       double juros = saldoDevedor * (taxaJurosMensal - 1);
-      double comBonus = product.bonusDia != null || product.bonusDia! > 0
-          ? juros - ((product.bonusDia! / 100) * juros)
-          : 0;
+
       parcelas.add(Parcela(
         parcela: i,
         valor: juros,
@@ -44,7 +42,7 @@ class Simulate {
         correcaoMonetaria: 0,
         juros: juros,
         saldoDevedor: saldoDevedor,
-        comBonus: comBonus,
+        comBonus: juros,
       ));
     }
 

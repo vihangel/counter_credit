@@ -14,6 +14,21 @@ class CalculateProductModel {
   int carenciaMeses;
   double valorFinanciamento;
 
+  double get valorTotal => parcelas.fold(
+      0, (previousValue, element) => previousValue + element.valor);
+
+  double get amortizacaoTotal => parcelas.fold(
+      0, (previousValue, element) => previousValue + element.amortizacao);
+
+  double get jurosTotal => parcelas.fold(
+      0, (previousValue, element) => previousValue + element.juros);
+
+  double get correcaoMonetariaTotal => parcelas.fold(
+      0, (previousValue, element) => previousValue + element.correcaoMonetaria);
+
+  double get bonusTotal => parcelas.fold(
+      0, (previousValue, element) => previousValue + element.comBonus);
+
   CalculateProductModel({
     this.product,
     required this.parcelas,
