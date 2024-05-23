@@ -54,7 +54,7 @@ class Simulate {
 
       saldoDevedor -= valorAmortizacao;
       double comBonus = product.bonusDia != null || product.bonusDia! > 0
-          ? valorParcela - ((product.bonusDia! / 100) * valorParcela)
+          ? valorParcela - ((product.bonusDia! / 100) * juros)
           : 0;
 
       parcelas.add(Parcela(
