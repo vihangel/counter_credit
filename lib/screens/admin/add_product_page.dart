@@ -6,7 +6,6 @@ import 'package:counter_credit/service/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 class AddProductPage extends StatefulWidget {
@@ -29,12 +28,6 @@ class _AddProductPageState extends State<AddProductPage> {
   int _carenciaMinima = 0;
   int _carenciaMaxima = 0;
   double? _bonusDia;
-
-  final _creditoFormatter = MaskTextInputFormatter(
-    mask: '###.###.###,##',
-    filter: {"#": RegExp(r'[0-9]')},
-    type: MaskAutoCompletionType.lazy,
-  );
 
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
@@ -138,9 +131,14 @@ class _AddProductPageState extends State<AddProductPage> {
                         const InputDecoration(labelText: 'Crédito Mínimo'),
                     keyboardType: TextInputType.number,
                     onSaved: (value) => _creditoMinimo = _parseCurrency(value!),
-                    inputFormatters: [_creditoFormatter],
                     validator: (value) {
-                      if (value == null || _parseCurrency(value) < 0.0) {
+                      if (double.tryParse(value!
+                              .replaceAll('.', '')
+                              .replaceAll(',', '.')) ==
+                          null) {
+                        return 'Por favor, insira um valor válido';
+                      }
+                      if (_parseCurrency(value) < 0.0) {
                         return 'Por favor, insira um valor válido';
                       }
                       return null;
@@ -153,9 +151,15 @@ class _AddProductPageState extends State<AddProductPage> {
                         const InputDecoration(labelText: 'Crédito Máximo'),
                     keyboardType: TextInputType.number,
                     onSaved: (value) => _creditoMaximo = _parseCurrency(value!),
-                    inputFormatters: [_creditoFormatter],
+                    // inputFormatters: [_creditoFormatter],
                     validator: (value) {
-                      if (value == null || _parseCurrency(value) == 0.0) {
+                      if (double.tryParse(value!
+                              .replaceAll('.', '')
+                              .replaceAll(',', '.')) ==
+                          null) {
+                        return 'Por favor, insira um valor válido';
+                      }
+                      if (_parseCurrency(value) == 0.0) {
                         return 'Por favor, insira um valor válido';
                       }
                       return null;
