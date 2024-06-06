@@ -1,11 +1,11 @@
 {
-    "name": "counter_credit",
-    "short_name": "counter_credit",
+    "name": "Conecta",
+    "short_name": "conecta",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Uma calculadora para simular crédito conecta",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
