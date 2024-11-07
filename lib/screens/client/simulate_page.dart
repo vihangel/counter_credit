@@ -368,6 +368,7 @@ class _SimulatePageState extends State<SimulatePage> {
                 'Amortização',
                 'Correção',
                 'Juros',
+                'Bônus',
                 'Saldo Devedor'
               ],
               ...product!.parcelas.map((item) => [
@@ -376,6 +377,7 @@ class _SimulatePageState extends State<SimulatePage> {
                     formatCurrency(item.amortizacao),
                     formatCurrency(item.correcaoMonetaria),
                     formatCurrency(item.juros),
+                    formatCurrency(item.comBonus),
                     formatCurrency(item.saldoDevedor)
                   ])
             ]),
