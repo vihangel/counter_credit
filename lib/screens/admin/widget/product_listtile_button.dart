@@ -5,16 +5,18 @@ class ProductListTileButton extends StatelessWidget {
   final IconData icon;
   final String name;
   final String description;
-
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
-  const ProductListTileButton(
-      {super.key,
-      required this.onPressed,
-      required this.icon,
-      required this.name,
-      required this.description,
-      required this.onDelete});
+  const ProductListTileButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.name,
+    required this.description,
+    required this.onDelete,
+    required this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +46,13 @@ class ProductListTileButton extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: onEdit,
+              ),
+              IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: onDelete,
-              )
+              ),
             ],
           ),
         ),

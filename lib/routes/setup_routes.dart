@@ -1,6 +1,7 @@
 import 'package:counter_credit/models/simulate.dart';
 import 'package:counter_credit/screens/admin/add_product_page.dart';
 import 'package:counter_credit/screens/admin/admin_home_page.dart';
+import 'package:counter_credit/screens/admin/edit_product_page.dart';
 import 'package:counter_credit/screens/admin/product_details_page.dart';
 import 'package:counter_credit/screens/client/home_page.dart';
 import 'package:counter_credit/screens/client/simulate_page.dart';
@@ -76,6 +77,13 @@ final router = GoRouter(
           path: 'add',
           builder: (context, state) {
             return const AddProductPage();
+          },
+        ),
+        GoRoute(
+          path: 'edit-product/:id',
+          builder: (context, state) {
+            final id = state.pathParameters['id'];
+            return EditProductPage(productId: id ?? '');
           },
         ),
       ],

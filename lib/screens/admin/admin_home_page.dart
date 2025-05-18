@@ -42,6 +42,7 @@ class HomePageAdminState extends State<HomePageAdmin> {
         _products.addAll(products);
       });
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Erro ao buscar produtos, atualize a página!'),
@@ -84,7 +85,7 @@ class HomePageAdminState extends State<HomePageAdmin> {
 
       _fetchProducts();
     } catch (e) {
-      log('Error deleting product: ${e}');
+      log('Error deleting product: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Erro ao remover o produto, atualize a página!'),
@@ -138,6 +139,9 @@ class HomePageAdminState extends State<HomePageAdmin> {
                 name: product.nome,
                 description: product.descricao,
                 onDelete: () => showDialogDelete(product.id),
+                onEdit: () {
+                  GoRouter.of(context).go('/admin/edit-product/${product.id}');
+                },
               );
             },
           ),

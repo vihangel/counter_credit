@@ -51,6 +51,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         automaticallyImplyLeading: true,
         actions: [
           IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              if (_product != null) {
+                GoRouter.of(context).go('/admin/edit-product/${_product!.id}');
+              }
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
               showDialog(
@@ -159,7 +167,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           content: Text('Erro ao deletar produto'),
         ),
       );
-      log('Error deleting product: ${e}');
+      log('Error deleting product: $e');
     }
   }
 }
